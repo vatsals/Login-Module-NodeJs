@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html ng-app="blog">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login Page</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="http://code.angularjs.org/1.2.13/angular.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+    <script src="cssfiles/scripts/angular.min.js"></script>
+	<script src="cssfiles/scripts/script.js"></script>
+	<script src="cssfiles/scripts/angular-recaptcha.min.js"></script>
+	<script src="https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit" async defer></script>
+    <style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        overflow-x: hidden;
+    }
+
+    form {
+        border: 0px solid #f1f1f1;
+    }
+
+    .main {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding-top: 40px;
+    }
+
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        padding: 10px 14px;
+        margin: 2px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    .cancelbtn {
+        width: auto;
+        padding: 10px 18px;
+        background-color: #E2493B;
+        border-radius: 2px;
+    }
+
+    .imgcontainer {
+        text-align: center;
+        margin: 15px 0 6px 0;
+    }
+
+    img.avatar {
+        width: 30%;
+        border-radius: 50%;
+    }
+
+    .container {
+        padding: 16px;
+    }
+
+    span.psw {
+        float: right;
+        padding-top: 18px;
+        font-size: 15px;
+    }
+    /* Change styles for span and cancel button on extra small screens */
+
+    @media screen and (max-width: 300px) {
+        span.psw {
+            display: block;
+            float: none;
+        }
+        .cancelbtn {
+            width: 100%;
+        }
+    }
+
+    .left,
+    .right {
+        display: flex;
+        flex: 5;
+    }
+
+    .mid {
+        display: flex;
+        flex-direction: column;
+        flex: 4;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        background: #fcfcfc;
+    }
+    @media screen and (max-width: 768px) {
+        .left,
+        .right {
+            display: flex;
+            flex: 0;
+        }
+        .main {
+            width: 90%;
+            margin-left: 5%;
+        }
+    }
+    </style>
+</head>
+<script>
+// var app = angular.module('myApp', []);
+// app.controller('myCtrl', function($scope) {
+//    	$scope.title = "Login Page";
+// });
+var app = angular.module('blog', ['vcRecaptcha']);
+app.controller("recapCtrl", function($scope, vcRecaptchaService) {
+	var vm = this;
+	//If the recaptcha value is empty alert error else alert the recaptcha resonse
+	vm.signup = function() {
+		if (vcRecaptchaService.getResponse() === "") { 
+			alert("Please resolve the captcha and submit!")
+		} else {
+			alert(vcRecaptchaService.getResponse());
+		}
+	}
+});
+</script>
+
+<body>
+    <div ng-app="myApp" class="main">
+        <div class="left">
+        </div>
+        <div ng-controller="recapCtrl as recap" class="mid">
+            <form action="/login" method="POST">
+                <div class="imgcontainer">
+                    <img src="cssfiles/login.png" alt="Avatar" class="avatar">
+                </div>
+                <div class="container" style="padding-top: 5px; padding-bottom: 10px;">
+                    <label>
+                        <p style="font-weight: 600; margin: 10px 0px 8px 0px;">Username</p>
+                    </label>
+                    <input type="text" placeholder="Enter Username" name="username" required>
+                    <label>
+                        <p style="font-weight: 600; margin: 20px 0px 8px 0px;">Password</p>
+                    </label>
+                    <input type="password" placeholder="Enter Password" name="password" required>
+                    <button type="submit" value="Login">Login</button>
+                    <label style="font-size: 15px;display: flex;">
+                        <input type="checkbox" checked="checked" style="margin-right: 5px;"> Remember me
+                    </label>
+                    <!-- <div tabindex="3" theme="clean" vc-recaptcha key="'6Ldab0MUAAAAACketGfEWgrfEgpi6iSimf53RQZh'" style="display: flex;justify-content: center;padding: 15px 0px 5px 0px;"></div> -->
+                </div>
+                <div class="container" style="background-color:#fcfcfc; padding: 10px; padding-top: 0px;">
+                    <a href="signup"><button type="button" class="cancelbtn">Sign Up</button></a>
+                    <a href="reset"><span class="psw">Forgot password?</span></a>
+                </div>
+            </form>
+        </div>
+        <div class="right">
+        </div>
+    </div>
+</body>
+
+</html>
