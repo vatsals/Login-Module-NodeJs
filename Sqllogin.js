@@ -3,19 +3,22 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var sessions = require('express-session');
 var mysql = require('mysql');
-var mongo = require('mongodb');
 const nodemailer = require('nodemailer');
-var MongoClient = require('mongodb').MongoClient;
 var app = express();
 
-var url = 'mongodb://localhost:27017/webusers';
+var connection = mysql.createConnection({
+	host: 'localhost',
+	user: 'root',
+	password: 'Vatsal&294',
+	database: 'webusers'
+});
 
-MongoClient.connect(url, function(err, database) {
-	if(err) {
-		console.log(err);
+connection.connect(function(error) {
+	if(!!error) {
+		console.log(error);
 	}
 	else {
-		console.log('Connected to ',url);
+		console.log('Succesfully connected');
 	}
 });
 
@@ -43,28 +46,23 @@ app.post('/login', function(request, response) {
 	}
 	var uname = request.body.username;
 	var pass = request.body.password;
-	
-	MongoClient.connect(url, function(err, database) {
-		if(err) {
-			console.log(err);
+	var sql = 'Select * FROM users WHERE username = ' + connection.escape(uname);
+	connection.query(sql, function(error, rows, fields) {
+		if(!!error) {
+			console.log(error);
 		}
 		else {
-			var db = database.db('webusers');
-			var collection = db.collection('users');
-			collection.find({"username":uname, "password":pass}).toArray(function(err, result) {
-				if(err) {
-					console.log(err);
-				}
-				else if(result.length) {
+			if(rows.length >0){
+				if(rows[0].password == pass){
 					session.uniqueID = request.body.username;
 					usname = request.body.username;
 				}
-				else {
-				}
-				response.redirect('/redirects');
-				database.close();
-			});
+			}
+			else {
+				
+			}
 		}
+		response.redirect('/redirects');
 	});
 });
 
@@ -105,25 +103,16 @@ app.post('/signup', function(request, response) {
 	    });
 	});
 
-	MongoClient.connect(url, function(err, database) {
-		if(err) {
-			console.log(err);
+	var sql= "insert into users(username, email, password) values ('"+uname+"', '"+email+"', '"+pass+"')";
+	connection.query(sql, function(error, rows, fields) {
+		if(!!error) {
+			console.log(error);
 		}
 		else {
-			var db = database.db('webusers');
-			var collection = db.collection('users');
-			collection.insert({"username": uname, "email": email, "password": pass, "confirmed":"0"}, function(err, res) {
-				if(err) {
-					console.log(err);
-				}
-				else {
-					session.uniqueID = request.body.username;
-					usname = request.body.username;
-				}
-				response.redirect('/redirects');
-				database.close();
-			});
+			session.uniqueID = request.body.username;
+			usname = request.body.username;
 		}
+		response.redirect('/redirects');
 	});
 });
 
@@ -136,41 +125,22 @@ app.post('/reset', function(request, response) {
 	var cpass = request.body.currpassword;
 	var npass = request.body.newpassword;
 	var rs = -1;
-	MongoClient.connect(url, function(err, database) {
-		if(err) {
-			console.log(err);
-		}
-		else {
-			var db = database.db('webusers');
-			var collection = db.collection('users');
-			collection.find({"username":uname, "password":cpass}).toArray(function(err, result) {
-				rs = result.length;
-				database.close();
-			});
-		}
+	var sqlCheck = "Select * FROM users WHERE username = " + connection.escape(uname) + "and password = " + connection.escape(cpass);
+	connection.query(sqlCheck, function(error, rows, fields) {
+		rs = rows.length;
 	});
-	
-	MongoClient.connect(url, function(err, database) {
-		if(err) {
-			console.log(err);
+	var sql= "update users set password = " + connection.escape(npass) + "where username = " + connection.escape(uname) + 'and password = ' + connection.escape(cpass);
+	connection.query(sql, function(error, rows, fields) {
+		if(!!error) {
+			console.log(error);
 		}
 		else {
-			var db = database.db('webusers');
-			var collection = db.collection('users');
-			collection.update({"username":uname, "password":cpass}, {$set: {'password':npass}}, function(err, res) {
-				if(err) {
-					console.log(err);
-				}
-				else {
-					if(rs >0){
-						session.uniqueID = request.body.username;
-						usname = request.body.username;
-					}
-				}
-				response.redirect('/redirects');
-				database.close();
-			});
+			if(rs >0){
+				session.uniqueID = request.body.username;
+				usname = request.body.username;
+			}
 		}
+		response.redirect('/redirects');
 	});
 });
 
