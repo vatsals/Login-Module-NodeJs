@@ -103,6 +103,11 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         background: #fcfcfc;
     }
+    .showme {
+    	color: red;
+    	font-size: 13px;
+    	padding-left: 1%;
+    }
     @media screen and (max-width: 768px) {
         .left,
         .right {
@@ -140,7 +145,7 @@ app.controller("recapCtrl", function($scope, vcRecaptchaService) {
         <div class="left">
         </div>
         <div ng-controller="recapCtrl as recap" class="mid">
-            <form action="/login" method="POST">
+            <form action="/login" method="POST" name="myForm">
                 <div class="imgcontainer">
                     <img src="cssfiles/login.png" alt="Avatar" class="avatar">
                 </div>
@@ -148,7 +153,10 @@ app.controller("recapCtrl", function($scope, vcRecaptchaService) {
                     <label>
                         <p style="font-weight: 600; margin: 10px 0px 8px 0px;">Username</p>
                     </label>
-                    <input type="text" placeholder="Enter Username" name="username" required>
+                    <input type="text" placeholder="Enter Username" name="username" ng-model="username" required>
+                    <span class="showme" ng-show="myForm.username.$dirty && myForm.username.$invalid">
+						<span ng-show="myForm.username.$error.required">Username is required.</span>
+					</span>
                     <label>
                         <p style="font-weight: 600; margin: 20px 0px 8px 0px;">Password</p>
                     </label>

@@ -104,6 +104,17 @@
         background: #fcfcfc;
     }
 
+    .showme {
+        color: red;
+        font-size: 13px;
+        padding-left: 1%;
+    }
+    .showme2 {
+        color: green;
+        font-size: 13px;
+        padding-left: 1%;
+    }
+
     @media screen and (max-width: 768px) {
         .left,
         .right {
@@ -129,7 +140,7 @@ app.controller('myCtrl', function($scope) {
         <div class="left">
         </div>
         <div class="mid">
-            <form action="/reset" method="POST">
+            <form action="/reset" method="POST" name="myForm">
                 <div class="imgcontainer">
                     <img src="cssfiles/login.png" alt="Avatar" class="avatar">
                 </div>
@@ -137,15 +148,20 @@ app.controller('myCtrl', function($scope) {
                     <label>
                         <p style="font-weight: 600; margin: 10px 0px 8px 0px;">Username</p>
                     </label>
-                    <input type="text" placeholder="Enter Username" name="username" required>
+                    <input type="text" placeholder="Enter Username" name="username" ng-model="username" required>
+                    <span class="showme" ng-show="myForm.username.$dirty && myForm.username.$invalid">
+                        <span ng-show="myForm.username.$error.required">Username is required.</span>
+                    </span>
                     <label>
                         <p style="font-weight: 600; margin: 20px 0px 8px 0px;">Current Password</p>
                     </label>
-                    <input type="password" placeholder="Enter Current Password" name="currpassword" required>
+                    <input type="password" placeholder="Enter Current Password" name="currpassword" ng-model="currpassword" required>
                     <label>
                         <p style="font-weight: 600; margin: 20px 0px 8px 0px;">New Password</p>
                     </label>
-                    <input type="password" placeholder="New Password" name="newpassword" required>
+                    <input type="password" placeholder="New Password" name="newpassword" ng-model="newpassword" required>
+                    <span class="showme" ng-if="var1">Passwords do not match.</span>
+                    <span class="showme2" ng-if="var2">Passwords match.</span>
                     <button type="submit" value="Login">Change Password</button>
                 </div>
                 <div class="container" style="background-color:#fcfcfc; padding: 10px; padding-top: 0px;">

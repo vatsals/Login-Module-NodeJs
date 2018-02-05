@@ -29,6 +29,7 @@
     }
 
     input[type=text],
+    input[type=email],
     input[type=password] {
         width: 100%;
         padding: 10px 14px;
@@ -102,6 +103,11 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         background: #fcfcfc;
     }
+    .showme {
+        color: red;
+        font-size: 13px;
+        padding-left: 1%;
+    }
     @media screen and (max-width: 768px) {
         .left,
         .right {
@@ -127,7 +133,7 @@ app.controller('myCtrl', function($scope) {
         <div class="left">
         </div>
         <div class="mid">
-            <form action="/signup" method="POST">
+            <form action="/signup" method="POST" name="myForm">
                 <div class="imgcontainer">
                     <img src="cssfiles/login.png" alt="Avatar" class="avatar">
                 </div>
@@ -135,11 +141,18 @@ app.controller('myCtrl', function($scope) {
                     <label>
                         <p style="font-weight: 600; margin: 10px 0px 8px 0px;">Username</p>
                     </label>
-                    <input type="text" placeholder="Enter Username" name="username" required>
+                    <input type="text" placeholder="Enter Username" name="username" ng-model="username" required>
+                    <span class="showme" ng-show="myForm.username.$dirty && myForm.username.$invalid">
+                        <span ng-show="myForm.username.$error.required">Username is required.</span>
+                    </span>
                     <label>
                         <p style="font-weight: 600; margin: 10px 0px 8px 0px;">Email</p>
                     </label>
-                    <input type="text" placeholder="Enter Email" name="email" required>
+                    <input type="email" placeholder="Enter Email" name="email" ng-model="email" required>
+                    <span style="color:red" ng-show="myForm.email.$dirty && myForm.email.$invalid">
+                        <span class="showme" ng-show="myForm.email.$error.required">Email is required.</span>
+                        <span class="showme" ng-show="myForm.email.$error.email">Invalid email address.</span>
+                    </span>
                     <label>
                         <p style="font-weight: 600; margin: 20px 0px 8px 0px;">Password</p>
                     </label>

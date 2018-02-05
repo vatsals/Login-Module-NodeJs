@@ -71,7 +71,7 @@ app.post('/signup', function(request, response) {
 	if(session.uniqueID) {
 		response.redirect('/redirects');
 	}
-	var uname = request.body.username.toUpperCase();
+	var uname = request.body.username;
 	// var ucasename = uname.charAt(0).toUpperCase() + uname.slice(1);
 	var email = request.body.email;
 	var pass = request.body.password;
